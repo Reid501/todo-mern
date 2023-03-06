@@ -18,7 +18,6 @@ mongoose
 const Todo = require("./modules/Todo");
 
 app.get("/todos", async (req, res) => {
-  console.log(req);
   const todos = await Todo.find();
 
   res.json(todos);
