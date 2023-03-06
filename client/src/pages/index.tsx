@@ -50,6 +50,22 @@ export default function Home() {
     setTodos((todos) => todos.filter((todo) => todo._id !== data._id));
   };
 
+  const addToDo = async () => {
+    const data = await fetch(API_BASE + "/todo/new", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        text: newTodo,
+      }),
+    }).then((res) => res.json());
+
+    setTodos([...todos, data]);
+    setPopupActive(false);
+    setNewTodo("");
+  };
+
   return (
     <div className="bg-darkAlt text-light min-h-screen p-16">
       <Head>
@@ -72,6 +88,40 @@ export default function Home() {
           />
         ))}
       </div>
+      <div
+        className="fixed bottom-32 right-16 flex items-center justify-center h-20 w-20 rounded-3xl text-4xl bg-gradient-to-b from-primary to-secondary cursor-pointer hover:opacity-80"
+        onClick={() => setPopupActive(true)}
+      >
+        +
+      </div>
+
+      {popupActive ? (
+        <div className="fixed top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] w-full max-w-[400px] bg-light p-8 rounded-md  shadow-lg shadow-dark">
+          <div
+            className="cursor-pointer absolute top-[16px] right-[16px] text-sm text-light bg-red-700 rounded-xl h-[20px] w-[20px] flex items-center justify-center"
+            onClick={() => setPopupActive(false)}
+          >
+            x
+          </div>
+          <div className="">
+            <h3 className="text-dark font-bold">ADD TASK</h3>
+            <input
+              className="border-none outline-none bg-white p-2 rounded-md w-full my-4 text-dark font-bold"
+              type="text"
+              onChange={(e) => setNewTodo(e.target.value)}
+              value={newTodo}
+            />
+            <button
+              className="bg-gradient-to-b from-primary to-secondary cursor-pointer hover:opacity-80 py-2 px-4 rounded-3xl font-bold text-lg"
+              onClick={addToDo}
+            >
+              Create Task
+            </button>
+          </div>
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 }
